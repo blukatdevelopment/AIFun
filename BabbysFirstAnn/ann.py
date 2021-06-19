@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+import random
 
 class NeuralNet():
     """
@@ -9,27 +10,42 @@ class NeuralNet():
     Each neuron needs a number of weights equalling the number of inputs it
     will receive.
     """
-    def __init__(self, layers_neuron_counts):
+    def __init__(self, layers_neuron_counts, thresholds=None, weights=None):
         """
         layers_neuron_counts contains the number of neurons that will be found
         in each of the layers. The first element is assumed to be the number
         of inputs.
         """
+        if thresholds == None:
+            thresholds = self.random_thresholds(layers_neuron_counts)
+        if weights == None:
+            weights = self.random_weights(layers_neuron_counts)
         self.layers = []
         last_layer = layers_neuron_counts[0]
         for i in range(len(layers_neuron_counts)-1):
             layer_neuron_count = layers_neuron_counts[i + 1]
-            # FIXME: Hardcoding threshold
-            threshold = 1
-            weights = []
+            neuron_weights = []
             new_layer = []
             for j in range(last_layer):
-                # FIXME: Hardcoding all weights as 1
-                weights.append(1)
+                neuron_weights.append(weights.pop(0))
             for k in range(layer_neuron_count):
-                new_layer.append(Neuron(threshold, weights))
+                new_layer.append(Neuron(thresholds.pop(0), neuron_weights))
             self.layers.append(new_layer)
             last_layer = len(new_layer)
+    
+    def random_thresholds(self, layers_neuron_counts):
+        out = []
+        for i in range(len(layers_neuron_counts)):
+            for j in range(i):
+                out.append(random.randrange(-10, 10, 1))
+        return out
+    
+    def random_weights(self, layers_neuron_counts):
+        out = []
+        for i in range(len(layers_neuron_counts)):
+            for j in range(layers_neuron_counts[i]):
+                out.append(random.randrange(-10, 10, 1))
+        return out
 
     def __str__(self):
         """
@@ -89,10 +105,11 @@ class Neuron():
         return "NEURON[Threshold = {}, Weights = {}]".format(self.threshold, self.weights)        
 
 def main():
+    random.seed()
     print("Hello, world!")
     ann = NeuralNet([2, 2, 3, 3, 2])
     print(ann)
-    input_signal = [2, 2]
+    input_signal = [1, 0]
     output_signal = ann.activate(input_signal)
     print("#--  Activation --#\nInput: {}\noutput: {}".format(input_signal, output_signal))
 
