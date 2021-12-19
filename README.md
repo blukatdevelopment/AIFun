@@ -1,2 +1,2 @@
 # AI Fun
-I'm going to have fun with AI here. Move along.
+This is just a repo for me to fiddle around with AI projects for fun.
